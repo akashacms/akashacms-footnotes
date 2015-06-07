@@ -11,3 +11,5 @@ Allows one to put a footnote in an AkashaCMS document file
 ```
 
 The akashacms-footnotes plugin processes that into end notes at the end of the rendered document.
+
+See [akashacms-footnotes home page](http://akashacms.com/plugin/footnotes.html) for more information

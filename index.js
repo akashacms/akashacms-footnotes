@@ -26,6 +26,9 @@ const url    = require('url');
 const async  = require('async');
 const akasha = require('akasharender');
 
+const log   = require('debug')('akasha:footnotes-plugin');
+const error = require('debug')('akasha:error-footnotes-plugin');
+
 module.exports = class FootnotesPlugin extends akasha.Plugin {
 	constructor() {
 		super("akashacms-footnotes");

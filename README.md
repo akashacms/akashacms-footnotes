@@ -4,7 +4,7 @@ Footnotes for AkashaCMS websites and AkashaEPUB books
 Allows one to put a footnote in an AkashaCMS document file
 
 ```
-<footnote href="http://example.com/path/to/something" 
+<footnote href="http://example.com/path/to/something"
     name="ABBREV" title="Title of footnote">
     Description of footnote
     </footnote>
@@ -12,4 +12,4 @@ Allows one to put a footnote in an AkashaCMS document file
 
 The akashacms-footnotes plugin processes that into end notes at the end of the rendered document.
 
-See [akashacms-footnotes home page](http://akashacms.com/plugin/footnotes.html) for more information
+See [akashacms-footnotes home page](http://akashacms.com/new/plugins/footnotes/index.html) for more information

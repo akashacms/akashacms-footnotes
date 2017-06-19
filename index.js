@@ -2,7 +2,7 @@
 /**
  *
  * Copyright 2015 David Herron
- * 
+ *
  * This file is part of AkashaCMS (http://akashacms.com/).
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,83 +18,83 @@
  *  limitations under the License.
  */
 
-var path  = require('path');
-var util  = require('util');
-var url   = require('url');
-var async = require('async');
+'use strict';
 
-var akasha;
-var config;
-var logger;
+const path   = require('path');
+const util   = require('util');
+const url    = require('url');
+const async  = require('async');
+const akasha = require('akasharender');
 
-module.exports.config = function(_akasha, _config) {
-	akasha = _akasha;
-	config = _config;
-	logger = akasha.getLogger("footnotes");
-	
-	config.root_partials.push(path.join(__dirname, 'partials'));
-	
-	return module.exports;
-};
+const log   = require('debug')('akasha:footnotes-plugin');
+const error = require('debug')('akasha:error-footnotes-plugin');
 
+module.exports = class FootnotesPlugin extends akasha.Plugin {
+	constructor() {
+		super("akashacms-footnotes");
+	}
+
+	configure(config) {
+		this._config = config;
+		config.addPartialsDir(path.join(__dirname, 'partials'));
+		config.addMahabhuta(module.exports.mahabhuta);
+	}
+}
+
+// TODO This needs to become a Munger
 module.exports.mahabhuta = [
 		function($, metadata, dirty, done) {
-        	logger.trace('footnote');
+        	log('footnote');
         	// <footnote href="http:..." name="..." title="..." rel="nofollow">Description</footnote>
         	var footnoteCount = 0;
             var footnotes = [];
             $('footnote').each(function(i, elem) { footnotes.push(elem); });
-            async.eachSeries(footnotes,
-            function(footnote, next) {
-            	var href = $(footnote).attr('href');
-            	var name = $(footnote).attr('name');
+            async.eachSeries(footnotes, (footnote, next) => {
+            	var href  = $(footnote).attr('href');
+            	var name  = $(footnote).attr('name');
             	var title = $(footnote).attr('title');
             	var rel   = $(footnote).attr('rel');
             	var text  = $(footnote).text();
-            	akasha.partial("ak_footnoteRef.html.ejs", {
+            	akasha.partial(metadata.config, "ak_footnoteRef.html.ejs", {
             		name: name
-            	}, function(err, html) {
-            		if (err) next(err);
-            		else {
-            		    // Ensure the footnote tags are replaced 
-            		    // so we only get here the first time through
-            			$(footnote).replaceWith(html);
-            			
-            			akasha.partial("ak_footnote.html.ejs", {
-            				count: ++footnoteCount,
-            				url: href,
-            				title: title,
-            				name: name,
-            				description: text,
-            				rel: rel
-            			}, function(err2, html2) {
-            				if (err2) next(err2);
-            				else {
-            					if ($('div#footnote-area').length <= 0) {
-            					    // Insert placeholder for the footnotes.
-            					    //
-            					    // At the time we get here there will be
-            					    // multiple root elements in the HTML.
-            					    // With Cheerio 0.19 the :root selector found
-            					    // each of those root elements.
-            					    // We want to put this code AFTER the LAST one.
-            						$(":root").last().after("<div id='footnote-area'><strong>Footnotes</strong><br></div>");
-            					}
-            					$('div#footnote-area').append(html2);
-            					next();
-            				}
-            			});
-            			
-            		}
-            	});
+            	})
+				.then(html => {
+        		    // Ensure the footnote tags are replaced
+        		    // so we only get here the first time through
+        			$(footnote).replaceWith(html);
+
+        			return akasha.partial(metadata.config, "ak_footnote.html.ejs", {
+        				count: ++footnoteCount,
+        				url: href,
+        				title: title,
+        				name: name,
+        				description: text,
+        				rel: rel
+        			})
+					.then(html2 => {
+    					if ($('div#footnote-area').length <= 0) {
+    					    // Insert placeholder for the footnotes.
+    					    //
+    					    // At the time we get here there will be
+    					    // multiple root elements in the HTML.
+    					    // With Cheerio 0.19 the :root selector found
+    					    // each of those root elements.
+    					    // We want to put this code AFTER the LAST one.
+    						$(":root").last().after("<div id='footnote-area'><strong>Footnotes</strong><br></div>");
+    					}
+    					$('div#footnote-area').append(html2);
+        			});
+            	})
+				// This executes only if there's no error being handled
+				.then(() => { next(); })
+				// This executes only if an error has occurred
+				.catch(err => { error(err); next(err); });;
             },
             function(err) {
 				if (err) {
-					logger.trace('partial Errored with '+ util.inspect(err));
+					log('partial Errored with '+ util.inspect(err));
 					done(err);
 				} else done();
         	});
         }
 ];
-
-		

@@ -41,6 +41,7 @@ module.exports = class FootnotesPlugin extends akasha.Plugin {
 	}
 }
 
+// TODO This needs to become a Munger
 module.exports.mahabhuta = [
 		function($, metadata, dirty, done) {
         	log('footnote');

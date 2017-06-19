@@ -18,12 +18,10 @@ Add the following to `package.json`
 ```
 "dependencies": {
     ...
-    "akashacms-footnotes": "akashacms/akashacms-footnotes#akasharender",
+    "akashacms-footnotes": ">=0.6",
     ...
 }
 ```
-
-The AkashaRender version of `akashacms-footnotes` has not been published to `npm` yet, and therefore must be referenced this way.
 
 Once added to `package.json` run: `npm install`
 

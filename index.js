@@ -25,22 +25,76 @@ const util   = require('util');
 const url    = require('url');
 const async  = require('async');
 const akasha = require('akasharender');
+const mahabhuta = akasha.mahabhuta;
 
-const log   = require('debug')('akasha:footnotes-plugin');
-const error = require('debug')('akasha:error-footnotes-plugin');
+const pluginName = "akashacms-footnotes";
+
+const _plugin_config = Symbol('config');
+const _plugin_options = Symbol('options');
 
 module.exports = class FootnotesPlugin extends akasha.Plugin {
-	constructor() {
-		super("akashacms-footnotes");
-	}
+    constructor() {
+        super(pluginName);
+    }
 
-	configure(config) {
-		this._config = config;
-		config.addPartialsDir(path.join(__dirname, 'partials'));
-		config.addMahabhuta(module.exports.mahabhuta);
-	}
+    configure(config, options) {
+        this[_plugin_config] = config;
+        this[_plugin_options] = options;
+        options.config = config;
+        config.addPartialsDir(path.join(__dirname, 'partials'));
+        config.addMahabhuta(module.exports.mahabhutaArray(options));
+    }
+    
+    get config() { return this[_plugin_config]; }
+    get options() { return this[_plugin_options]; }
 }
 
+module.exports.mahabhutaArray = function(options) {
+    let ret = new mahabhuta.MahafuncArray(pluginName, options);
+    ret.addMahafunc(new FootnoteMunger());
+    return ret;
+};
+
+class FootnoteMunger extends mahabhuta.Munger {
+    get selector() { return "footnote"; }
+    async process($, $link, metadata, dirty) {
+        // <footnote href="http:..." name="..." title="..." rel="nofollow">Description</footnote>
+        var footnoteCount = 0;
+        var footnotes = [];
+
+        var href  = $link.attr('href');
+        var name  = $link.attr('name');
+        var title = $link.attr('title');
+        var rel   = $link.attr('rel');
+        var text  = $link.text();
+        let html = await akasha.partial(this.array.options.config, "ak_footnoteRef.html.ejs", {
+            name: name
+        });
+
+        $link.replaceWith(html);
+
+        let html2 = await akasha.partial(this.array.options.config, "ak_footnote.html.ejs", {
+            count: ++footnoteCount,
+            url: href,
+            title: title,
+            name: name,
+            description: text,
+            rel: rel
+        });
+        if ($('div#footnote-area').length <= 0) {
+            // Insert placeholder for the footnotes.
+            //
+            // At the time we get here there will be
+            // multiple root elements in the HTML.
+            // With Cheerio 0.19 the :root selector found
+            // each of those root elements.
+            // We want to put this code AFTER the LAST one.
+            $(":root").last().after("<div id='footnote-area'><strong>Footnotes</strong><br></div>");
+        }
+        $('div#footnote-area').append(html2);
+    }
+}
+/*
 // TODO This needs to become a Munger
 module.exports.mahabhuta = [
 		function($, metadata, dirty, done) {
@@ -98,3 +152,4 @@ module.exports.mahabhuta = [
         	});
         }
 ];
+*/

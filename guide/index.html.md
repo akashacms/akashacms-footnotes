@@ -18,7 +18,7 @@ Add the following to `package.json`
 ```
 "dependencies": {
     ...
-    "akashacms-footnotes": ">=0.6",
+    "akashacms-footnotes": ">=0.7",
     ...
 }
 ```

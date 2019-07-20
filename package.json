@@ -26,12 +26,10 @@
     "type": "git",
     "url": "git://github.com/akashacms/akashacms-footnotes.git"
   },
-  "version": "0.6.0",
+  "version": "0.7.0",
   "engines": {
-    "node": ">=6.1"
+    "node": ">=12.1"
   },
   "dependencies": {
-    "async": ">=0.1.22",
-    "debug": "^2.2.0"
   }
 }

@@ -7,7 +7,7 @@ Footnotes are widely used in writing to cite references or add additional commen
 
 The code to generate that footnote:
 
-```
+```html
 <footnote name="AkashaCMS" href="https://akashacms.com" title="Build the website of your dreams"/>
 ```
 
@@ -15,7 +15,7 @@ The code to generate that footnote:
 
 Add the following to `package.json`
 
-```
+```json
 "dependencies": {
     ...
     "akashacms-footnotes": ">=0.7",
@@ -29,7 +29,7 @@ Once added to `package.json` run: `npm install`
 
 Add the following to `config.js`
 
-```
+```js
 config
     ...
     .use(require('akashacms-footnotes'))
@@ -38,5 +38,13 @@ config
 
 # Custom Tags
 
+Example.
 
-TODO - Have not written this yet.  Study the source code for clues.
+```html
+<footnote name="everything"
+    href="http://every.thing"
+    title="With Title and all the fixings"
+    rel="relative">
+    A footnote with everything and all the fixings
+    </footnote>
+```

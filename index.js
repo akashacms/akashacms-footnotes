@@ -27,7 +27,7 @@ const async  = require('async');
 const akasha = require('akasharender');
 const mahabhuta = akasha.mahabhuta;
 
-const pluginName = "akashacms-footnotes";
+const pluginName = "@akashacms/plugins-footnotes";
 
 const _plugin_config = Symbol('config');
 const _plugin_options = Symbol('options');

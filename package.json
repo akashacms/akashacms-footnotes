@@ -4,7 +4,7 @@
     "email": "david@davidherron.com",
     "url": "http://davidherron.com"
   },
-  "name": "akashacms-footnotes",
+  "name": "@akashacms/plugins-footnotes",
   "keywords": [
     "content management system",
     "cms",
@@ -26,9 +26,12 @@
     "type": "git",
     "url": "git://github.com/akashacms/akashacms-footnotes.git"
   },
-  "version": "0.7.0",
+  "version": "0.7.1",
   "engines": {
     "node": ">=12.1"
+  },
+  "scripts": {
+      "dopublish": "npm publish --access public"
   },
   "dependencies": {
   }

@@ -18,7 +18,7 @@ Add the following to `package.json`
 ```json
 "dependencies": {
     ...
-    "akashacms-footnotes": ">=0.7",
+    "@akashacms/plugins-footnotes": "^0.7.x",
     ...
 }
 ```
@@ -32,7 +32,7 @@ Add the following to `config.js`
 ```js
 config
     ...
-    .use(require('akashacms-footnotes'))
+    .use(require('@akashacms/plugins-footnotes'))
     ...
 ```
 

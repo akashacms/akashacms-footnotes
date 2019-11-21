@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./index",
-    "setup": "npm install && cd .. && npm install && npm install akashacms/akasharender --no-save",
+    "doinstall": "npm install",
+    "parentinstall": "cd .. && npm install",
+    "akashainstall": "cd .. && npm install akashacms/akasharender --no-save",
+    "setup": "npm run doinstall && npm run parentinstall && npm run akashainstall",
     "clean": "rm -rf node_modules out"
   },
   "author": "",

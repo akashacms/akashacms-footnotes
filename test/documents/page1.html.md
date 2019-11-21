@@ -19,3 +19,6 @@ teaser: Teaser for page 1
     A footnote with everything and all the fixings
     </footnote>
 
+<footnote-ref name="with-name"></footnote-ref>
+
+<footnote-ref name="everything"></footnote-ref>

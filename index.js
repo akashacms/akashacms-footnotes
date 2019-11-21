@@ -52,6 +52,7 @@ module.exports = class FootnotesPlugin extends akasha.Plugin {
 module.exports.mahabhutaArray = function(options) {
     let ret = new mahabhuta.MahafuncArray(pluginName, options);
     ret.addMahafunc(new FootnoteMunger());
+    ret.addMahafunc(new FootnoteRef());
     return ret;
 };
 
@@ -94,6 +95,21 @@ class FootnoteMunger extends mahabhuta.Munger {
         $('div#footnote-area').append(html2);
     }
 }
+
+
+class FootnoteRef extends mahabhuta.CustomElement {
+    get elementName() { return "footnote-ref"; }
+    async process($element, metadata, dirty) {
+        var template = $element.attr('template');
+        if (!template) template = 'ak_footnoteRef.html.ejs';
+        var name  = $element.attr('name');
+        return await akasha.partial(this.array.options.config, template, {
+            name: name
+        });
+    }
+}
+
+
 /*
 // TODO This needs to become a Munger
 module.exports.mahabhuta = [

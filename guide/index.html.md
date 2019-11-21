@@ -48,3 +48,9 @@ Example.
     A footnote with everything and all the fixings
     </footnote>
 ```
+
+Example.
+
+```html
+<footnote-ref name="footnote-name"></footnote-ref>
+```

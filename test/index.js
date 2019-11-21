@@ -69,4 +69,17 @@ describe('check pages', function() {
         assert.include($('#footnote-area a[href="http://every.thing"] .ak-footnote-title').html(), "With Title and all the fixings");
         assert.equal($('span.ak-footnote-description:contains("A footnote with everything and all the fixings")').length, 1);
     });
+
+
+    it('should have correct footnote references', async function() {
+
+        let { html, $ } = await akasha.readRenderedFile(config, 
+                '/page1.html');
+
+        assert.exists(html, 'result exists');
+        assert.isString(html, 'result isString');
+
+        assert.equal($('sup a[href="#with-name"]').length, 2);
+        assert.equal($('sup a[href="#everything"]').length, 2);
+    });
 });

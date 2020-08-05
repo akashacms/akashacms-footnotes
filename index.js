@@ -83,14 +83,23 @@ class FootnoteMunger extends mahabhuta.Munger {
             rel: rel
         });
         if ($('div#footnote-area').length <= 0) {
-            // Insert placeholder for the footnotes.
-            //
-            // At the time we get here there will be
-            // multiple root elements in the HTML.
-            // With Cheerio 0.19 the :root selector found
-            // each of those root elements.
-            // We want to put this code AFTER the LAST one.
-            $(":root").last().after("<div id='footnote-area'><strong>Footnotes</strong><br></div>");
+            let marker = "<div id='footnote-area'><strong>Footnotes</strong><br></div>";
+
+            // Since there isn't a designated location, find a place to insert it
+            if ($('body article').length >= 1) {
+                $('body article').append(marker);
+            } else if ($('body').length >= 1) {
+                $('body').append(marker);
+            } else {
+                // Insert placeholder for the footnotes.
+                //
+                // At the time we get here there will be
+                // multiple root elements in the HTML.
+                // With Cheerio 0.19 the :root selector found
+                // each of those root elements.
+                // We want to put this code AFTER the LAST one.
+                $(":root").last().after(marker);
+            }
         }
         $('div#footnote-area').append(html2);
     }

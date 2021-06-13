@@ -1,24 +1,46 @@
 
 const akasha   = require('akasharender');
 const assert = require('chai').assert;
-const booknav = require('../index');
+const footnotes = require('../index');
 const util = require('util');
 
-const config = new akasha.Configuration();
-config.rootURL("https://example.akashacms.com");
-config.configDir = __dirname;
-config.addLayoutsDir('layouts')
-      .addDocumentsDir('documents');
-config.use(booknav);
-config.setMahabhutaConfig({
-    recognizeSelfClosing: true,
-    recognizeCDATA: true,
-    decodeEntities: true
-});
-config.prepare();
-
+let config;
 
 describe('build site', function() {
+    it('should construct configuration', async function() {
+        this.timeout(75000);
+        config = new akasha.Configuration();
+        config.rootURL("https://example.akashacms.com");
+        config.configDir = __dirname;
+        config.addLayoutsDir('layouts')
+            .addDocumentsDir('documents');
+        config.use(footnotes);
+        config.setMahabhutaConfig({
+            recognizeSelfClosing: true,
+            recognizeCDATA: true,
+            decodeEntities: true
+        });
+        config.prepare();
+    });
+
+    it('should run setup', async function() {
+        this.timeout(75000);
+        await akasha.cacheSetup(config);
+        await Promise.all([
+            akasha.setupDocuments(config),
+            akasha.setupAssets(config),
+            akasha.setupLayouts(config),
+            akasha.setupPartials(config)
+        ])
+        let filecache = await akasha.filecache;
+        await Promise.all([
+            filecache.documents.isReady(),
+            filecache.assets.isReady(),
+            filecache.layouts.isReady(),
+            filecache.partials.isReady()
+        ]);
+    });
+
     it('should build site', async function() {
         this.timeout(15000);
         let failed = false;
@@ -81,5 +103,13 @@ describe('check pages', function() {
 
         assert.equal($('sup a[href="#with-name"]').length, 2);
         assert.equal($('sup a[href="#everything"]').length, 2);
+    });
+});
+
+
+describe('Close caches', function() {
+    it('should close the configuration', async function() {
+        this.timeout(75000);
+        await akasha.closeCaches();
     });
 });

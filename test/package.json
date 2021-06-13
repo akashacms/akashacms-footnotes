@@ -7,7 +7,7 @@
     "test": "mocha ./index",
     "doinstall": "npm install",
     "parentinstall": "cd .. && npm install",
-    "akashainstall": "cd .. && npm install akashacms/akasharender --no-save",
+    "akashainstall": "cd .. && npm install akashacms/akasharender#watcher --no-save",
     "setup": "npm run doinstall && npm run parentinstall && npm run akashainstall",
     "clean": "rm -rf node_modules out"
   },

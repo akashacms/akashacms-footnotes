@@ -54,3 +54,11 @@ Example.
 ```html
 <footnote-ref name="footnote-name"></footnote-ref>
 ```
+
+You can designate a location for the footnotes by adding this code:
+
+```html
+<div id='footnote-area'><strong>Footnotes</strong><br></div>
+```
+
+The plugin will look for `div#footnote-area`, and append footnotes within that location.  If such a location is not found, then the above code is inserted into the page.  It is best for you to explicitly declare where the footnotes are to land.

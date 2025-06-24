@@ -1,7 +1,7 @@
 
 /**
  *
- * Copyright 2015 David Herron
+ * Copyright 2015-2025 David Herron
  *
  * This file is part of AkashaCMS (http://akashacms.com/).
  *
@@ -20,8 +20,12 @@
 
 import path from 'node:path';
 // const util   = require('util');
-// const url    = require('url');
-import akasha from 'akasharender';
+import akasha, {
+    Configuration,
+    CustomElement,
+    Munger,
+    PageProcessor
+} from 'akasharender';
 const mahabhuta = akasha.mahabhuta;
 
 const __dirname = import.meta.dirname;
@@ -36,26 +40,34 @@ export class FootnotesPlugin extends akasha.Plugin {
         super(pluginName);
     }
 
+    #config;
+
     configure(config, options) {
-        this[_plugin_config] = config;
-        this[_plugin_options] = options;
-        options.config = config;
+        this.#config = config;
+        // this.config = config;
+        this.akasha = config.akasha;
+        this.options = options ? options : {};
+        this.options.config = config;
         config.addPartialsDir(path.join(__dirname, 'partials'));
-        config.addMahabhuta(mahabhutaArray(options));
+        config.addMahabhuta(mahabhutaArray(options, config, this.akasha, this));
     }
     
-    get config() { return this[_plugin_config]; }
-    get options() { return this[_plugin_options]; }
+    get config() { return this.#config; }
 }
 
-export function mahabhutaArray(options) {
+export function mahabhutaArray(
+    options,
+    config, // ?: Configuration,
+    akasha, // ?: any,
+    plugin  // ?: Plugin
+) {
     let ret = new mahabhuta.MahafuncArray(pluginName, options);
-    ret.addMahafunc(new FootnoteMunger());
-    ret.addMahafunc(new FootnoteRef());
+    ret.addMahafunc(new FootnoteMunger(config, akasha, plugin));
+    ret.addMahafunc(new FootnoteRef(config, akasha, plugin));
     return ret;
 };
 
-class FootnoteMunger extends mahabhuta.Munger {
+class FootnoteMunger extends Munger {
     get selector() { return "footnote"; }
     async process($, $link, metadata, dirty) {
         // <footnote href="http:..." name="..." title="..." rel="nofollow">Description</footnote>
@@ -67,13 +79,13 @@ class FootnoteMunger extends mahabhuta.Munger {
         var title = $link.attr('title');
         var rel   = $link.attr('rel');
         var text  = $link.text();
-        let html = await akasha.partial(this.array.options.config, "ak_footnoteRef.html.ejs", {
+        let html = await this.akasha.partial(this.config, "ak_footnoteRef.html.ejs", {
             name: name
         });
 
         $link.replaceWith(html);
 
-        let html2 = await akasha.partial(this.array.options.config, "ak_footnote.html.ejs", {
+        let html2 = await this.akasha.partial(this.config, "ak_footnote.html.ejs", {
             count: ++footnoteCount,
             url: href,
             title: title,
@@ -105,13 +117,13 @@ class FootnoteMunger extends mahabhuta.Munger {
 }
 
 
-class FootnoteRef extends mahabhuta.CustomElement {
+class FootnoteRef extends CustomElement {
     get elementName() { return "footnote-ref"; }
     async process($element, metadata, dirty) {
         var template = $element.attr('template');
         if (!template) template = 'ak_footnoteRef.html.ejs';
         var name  = $element.attr('name');
-        return await akasha.partial(this.array.options.config, template, {
+        return await this.akasha.partial(this.config, template, {
             name: name
         });
     }

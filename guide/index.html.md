@@ -18,7 +18,7 @@ Add the following to `package.json`
 ```json
 "dependencies": {
     ...
-    "@akashacms/plugins-footnotes": "^0.7.x",
+    "@akashacms/plugins-footnotes": "^0.9.x",
     ...
 }
 ```
@@ -27,12 +27,14 @@ Once added to `package.json` run: `npm install`
 
 # Configuration
 
-Add the following to `config.js`
+Add the following to `config.mjs`
 
 ```js
+import { FootnotesPlugin } from '@akashacms/plugins-footnotes';
+// ...
 config
     ...
-    .use(require('@akashacms/plugins-footnotes'))
+    .use(FootnotesPlugin)
     ...
 ```
 

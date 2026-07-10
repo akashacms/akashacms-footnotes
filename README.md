@@ -1,4 +1,7 @@
 # akashacms-footnotes
+
+This is version 0.10, meant for compatibility with akasharender@0.10
+
 Footnotes for AkashaCMS websites and AkashaEPUB books
 
 Allows one to put a footnote in an AkashaCMS document file

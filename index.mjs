@@ -32,9 +32,6 @@ const __dirname = import.meta.dirname;
 
 const pluginName = "@akashacms/plugins-footnotes";
 
-const _plugin_config = Symbol('config');
-const _plugin_options = Symbol('options');
-
 export class FootnotesPlugin extends akasha.Plugin {
     constructor() {
         super(pluginName);
@@ -93,8 +90,8 @@ class FootnoteMunger extends Munger {
             description: text,
             rel: rel
         });
-        if ($('div#footnote-area').length <= 0) {
-            let marker = "<div id='footnote-area'><strong>Footnotes</strong><br></div>";
+        if ($('footer#footnote-area').length <= 0) {
+            let marker = "<footer id='footnote-area'><strong>Footnotes</strong><br></footer>";
 
             // Since there isn't a designated location, find a place to insert it
             if ($('body article').length >= 1) {
@@ -112,7 +109,7 @@ class FootnoteMunger extends Munger {
                 $(":root").last().after(marker);
             }
         }
-        $('div#footnote-area').append(html2);
+        $('footer#footnote-area').append(html2);
     }
 }
 
